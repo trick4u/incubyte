@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class StringCalculator {
   int add(String numbers) {
     if (numbers.isEmpty) {
@@ -19,8 +17,6 @@ class StringCalculator {
 
         // Extract delimiter
         String delimiterSection = parts[0].substring(2);
-        
-        // Handle multi-character delimiters (//[***]\n1***2***3)
         if (delimiterSection.startsWith('[') && delimiterSection.endsWith(']')) {
           delimiter = RegExp.escape(delimiterSection.substring(1, delimiterSection.length - 1));
         } else {
@@ -41,6 +37,7 @@ class StringCalculator {
               throw FormatException('Invalid number: "$str"');
             }
           })
+          .where((num) => num <= 1000) // ✅ Ignore numbers > 1000
           .toList();
 
       // Handle negative numbers
