@@ -33,6 +33,30 @@ void main() {
       expect(calculator.add('1,2,3,4,5'), 15);
     });
 
+    //new line as delimiter
+
+        test('New line as delimiter should return sum of numbers', () {
+      expect(calculator.add('1\n2,3'), 6);
+    });
+
+    //custom delimiter for semicolon
+
+      test('Custom delimiter (semicolon) should work', () {
+      expect(calculator.add('//;\n1;2;3'), 6);
+    });
+
+    //custom delimiter for pipe
+
+      test('Custom delimiter (pipe) should work', () {
+      expect(calculator.add('//|\n1|2|3'), 6);
+    });
+
+    //multi line custom delimiter
+
+      test('Multi-line custom delimiter should work', () {
+      expect(calculator.add('//[***]\n1***2***3'), 6);
+    });
+
 
 
   });
