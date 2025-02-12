@@ -37,7 +37,7 @@ class StringCalculator {
               throw FormatException('Invalid number: "$str"');
             }
           })
-          .where((num) => num <= 1000) // ✅ Ignore numbers > 1000
+          // .where((num) => num <= 1000) //
           .toList();
 
       // Handle negative numbers

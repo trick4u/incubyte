@@ -1,4 +1,4 @@
-import 'dart:ui' as ui; // ✅ Fixes missing UI-related symbols
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:incubyte/logic.dart';
 
@@ -56,6 +56,22 @@ void main() {
       test('Multi-line custom delimiter should work', () {
       expect(calculator.add('//[***]\n1***2***3'), 6);
     });
+
+    //negative numbers errors
+    
+      test('Negative numbers should throw an exception', () {
+      expect(() => calculator.add('1,-2,3'), throwsException);
+    });
+
+
+
+     test('Multiple negative numbers should be listed in the exception message', () {
+  expect(
+    () => calculator.add('1,-2,-3,4'),
+    throwsA(predicate((e) =>
+        e.toString().contains('Negative numbers not allowed: -2,-3'))),
+  );
+});
 
 
 
