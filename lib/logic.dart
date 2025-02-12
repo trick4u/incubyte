@@ -1,5 +1,3 @@
-//logic part
-
 import 'package:flutter/material.dart';
 
 class StringCalculator {
@@ -7,28 +5,53 @@ class StringCalculator {
     if (numbers.isEmpty) {
       return 0;
     }
-    String delimiter = ',';
-    String numbersToProcess = numbers;
 
-    //custom delimiter
-    if (numbers.startsWith('//')) {
-      var parts = numbers.split('\n');
-      delimiter = parts[0].substring(2);
-      numbersToProcess = parts[1];
+    try {
+      String delimiter = ','; // Default delimiter
+      String numbersToProcess = numbers;
+
+      if (numbers.startsWith('//')) {
+        var parts = numbers.split('\n');
+        if (parts.length < 2) {
+          throw FormatException(
+              'Invalid format. Correct format: //delimiter\\nnumbers\nExample: //;\\n1;2;3');
+        }
+
+        // Extract delimiter
+        String delimiterSection = parts[0].substring(2);
+        
+        // Handle multi-character delimiters (//[***]\n1***2***3)
+        if (delimiterSection.startsWith('[') && delimiterSection.endsWith(']')) {
+          delimiter = RegExp.escape(delimiterSection.substring(1, delimiterSection.length - 1));
+        } else {
+          delimiter = RegExp.escape(delimiterSection);
+        }
+
+        numbersToProcess = parts.sublist(1).join('\n'); // Keep everything after the first newline
+      }
+
+      // Split using both newline and the extracted delimiter
+      List<int> nums = numbersToProcess
+          .split(RegExp('[\n$delimiter]'))
+          .where((str) => str.trim().isNotEmpty)
+          .map((str) {
+            try {
+              return int.parse(str.trim());
+            } catch (e) {
+              throw FormatException('Invalid number: "$str"');
+            }
+          })
+          .toList();
+
+      // Handle negative numbers
+      var negativeNumbers = nums.where((num) => num < 0).toList();
+      if (negativeNumbers.isNotEmpty) {
+        throw Exception('Negative numbers not allowed: ${negativeNumbers.join(',')}');
+      }
+
+      return nums.reduce((sum, num) => sum + num);
+    } catch (e) {
+      rethrow;
     }
-    numbersToProcess = numbersToProcess.replaceAll('\n', delimiter);
-
-    List<int> nums = numbersToProcess
-        .split(delimiter)
-        .map((str) => int.parse(str.trim()))
-        .toList();
-
-    var negativeNumbers = nums.where((num) => num < 0).toList();
-    if (negativeNumbers.isNotEmpty) {
-      throw Exception(
-          'negative numbers not allowed: ${negativeNumbers.join(',')}'); // Added colon and space
-    }
-
-    return nums.reduce((sum, num) => sum + num);
   }
 }
